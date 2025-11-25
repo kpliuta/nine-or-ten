@@ -2,9 +2,11 @@ package com.kpliuta.nineorten
 
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -100,14 +102,18 @@ fun DrumMachineScreen() {
 
     val loopMediaPlayers = remember {
         loopButtonRects.mapIndexed { index, _ ->
-            val soundId = context.resources.getIdentifier("loop${index + 1}", "raw", context.packageName)
-            if (soundId != 0) MediaPlayer.create(context, soundId)?.apply { isLooping = true } else null
+            val soundId =
+                context.resources.getIdentifier("loop${index + 1}", "raw", context.packageName)
+            if (soundId != 0) MediaPlayer.create(context, soundId)?.apply {
+                isLooping = true
+            } else null
         }
     }
 
     val padMediaPlayers = remember {
         drumPadRects.mapIndexed { index, _ ->
-            val soundId = context.resources.getIdentifier("sound${index + 1}", "raw", context.packageName)
+            val soundId =
+                context.resources.getIdentifier("sound${index + 1}", "raw", context.packageName)
             if (soundId != 0) MediaPlayer.create(context, soundId) else null
         }
     }
@@ -166,6 +172,7 @@ fun DrumMachineScreen() {
                         newStates[index] = !newStates[index]
                         loopStates = newStates
                         if (newStates[index]) {
+                            player.playbackParams = player.playbackParams.setSpeed(1.1f)
                             player.start()
                         } else {
                             if (player.isPlaying) {
@@ -180,6 +187,7 @@ fun DrumMachineScreen() {
                         if (player.isPlaying) {
                             player.seekTo(0)
                         } else {
+                            player.playbackParams = player.playbackParams.setSpeed(1.3f)
                             player.start()
                         }
                         padStates = padStates.toMutableList().also { it[index] = true }
