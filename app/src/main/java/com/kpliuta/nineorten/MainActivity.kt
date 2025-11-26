@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,8 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
+import com.kpliuta.nineorten.R
 import com.kpliuta.nineorten.ui.theme.NineOrTenTheme
-import java.io.IOException
 import kotlin.math.min
 
 class MainActivity : ComponentActivity() {
@@ -45,17 +46,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun assetBitmap(assetName: String): ImageBitmap? {
+private fun drawableBitmap(@DrawableRes resId: Int): ImageBitmap? {
     val context = LocalContext.current
-    return remember(assetName) {
-        try {
-            context.assets.open(assetName).use {
-                BitmapFactory.decodeStream(it).asImageBitmap()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
+    return remember(resId) {
+        val options = BitmapFactory.Options().apply {
+            inScaled = false
         }
+        BitmapFactory.decodeResource(context.resources, resId, options)?.asImageBitmap()
     }
 }
 
@@ -92,8 +89,8 @@ private val drumPadRects = listOf(
 
 @Composable
 fun DrumMachineScreen() {
-    val idleBitmap = assetBitmap("images/idle.png")
-    val pressedBitmap = assetBitmap("images/pressed.png")
+    val idleBitmap = drawableBitmap(R.drawable.idle)
+    val pressedBitmap = drawableBitmap(R.drawable.pressed)
 
     var loopStates by remember { mutableStateOf(List(4) { false }) }
     var padStates by remember { mutableStateOf(List(16) { false }) }
