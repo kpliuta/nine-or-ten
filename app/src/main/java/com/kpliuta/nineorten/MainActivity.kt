@@ -2,12 +2,10 @@ package com.kpliuta.nineorten
 
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -30,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
-import com.kpliuta.nineorten.R
 import com.kpliuta.nineorten.ui.theme.NineOrTenTheme
 import kotlin.math.min
 
@@ -58,33 +55,28 @@ private fun drawableBitmap(@DrawableRes resId: Int): ImageBitmap? {
 
 // Coordinates from Photoshop
 private val loopButtonRects = listOf(
-    IntRect(421, 712, 421 + 192, 712 + 148), // Loop 1
-    IntRect(646, 712, 646 + 192, 712 + 148), // Loop 2
-    IntRect(866, 712, 866 + 192, 712 + 148), // Loop 3
-    IntRect(1089, 712, 1089 + 192, 712 + 148) // Loop 4
+    IntRect(70, 239, 70 + 242, 239 + 148), // Loop 1
+    IntRect(323, 239, 323 + 242, 239 + 148), // Loop 2
+    IntRect(576, 239, 576 + 242, 239 + 148), // Loop 3
+    IntRect(829, 239, 829 + 242, 239 + 148) // Loop 4
 )
 
 private val drumPadRects = listOf(
     // Row 1
-    IntRect(258, 885, 258 + 228, 885 + 228),
-    IntRect(493, 885, 493 + 228, 885 + 228),
-    IntRect(728, 885, 728 + 228, 885 + 228),
-    IntRect(963, 885, 963 + 228, 885 + 228),
+    IntRect(68, 429, 68 + 250, 429 + 250),
+    IntRect(320, 429, 320 + 250, 429 + 250),
+    IntRect(572, 429, 572 + 250, 429 + 250),
+    IntRect(823, 429, 823 + 250, 429 + 250),
     // Row 2
-    IntRect(258, 1123, 258 + 228, 1123 + 228),
-    IntRect(493, 1123, 493 + 228, 1123 + 228),
-    IntRect(728, 1123, 728 + 228, 1123 + 228),
-    IntRect(963, 1123, 963 + 228, 1123 + 228),
+    IntRect(68, 684, 68 + 250, 684 + 250),
+    IntRect(320, 684, 320 + 250, 684 + 250),
+    IntRect(572, 684, 572 + 250, 684 + 250),
+    IntRect(823, 684, 823 + 250, 684 + 250),
     // Row 3
-    IntRect(258, 1362, 258 + 228, 1362 + 228),
-    IntRect(493, 1362, 493 + 228, 1362 + 228),
-    IntRect(728, 1362, 728 + 228, 1362 + 228),
-    IntRect(963, 1362, 963 + 228, 1362 + 228),
-    // Row 4
-    IntRect(258, 1601, 258 + 228, 1601 + 228),
-    IntRect(493, 1601, 493 + 228, 1601 + 228),
-    IntRect(728, 1601, 728 + 228, 1601 + 228),
-    IntRect(963, 1601, 963 + 228, 1601 + 228)
+    IntRect(68, 939, 68 + 250, 939 + 250),
+    IntRect(320, 939, 320 + 250, 939 + 250),
+    IntRect(572, 939, 572 + 250, 939 + 250),
+    IntRect(823, 939, 823 + 250, 939 + 250)
 )
 
 @Composable
@@ -93,7 +85,7 @@ fun DrumMachineScreen() {
     val pressedBitmap = drawableBitmap(R.drawable.pressed)
 
     var loopStates by remember { mutableStateOf(List(4) { false }) }
-    var padStates by remember { mutableStateOf(List(16) { false }) }
+    var padStates by remember { mutableStateOf(List(12) { false }) }
 
     val context = LocalContext.current
 
@@ -169,7 +161,6 @@ fun DrumMachineScreen() {
                         newStates[index] = !newStates[index]
                         loopStates = newStates
                         if (newStates[index]) {
-                            player.playbackParams = player.playbackParams.setSpeed(1.1f)
                             player.start()
                         } else {
                             if (player.isPlaying) {
@@ -236,26 +227,6 @@ fun DrumMachineScreen() {
 
             drawPressedStates(loopButtonRects, loopStates)
             drawPressedStates(drumPadRects, padStates)
-
-            // DEBUG: Draw the tap zones
-            fun drawDebugRects(rects: List<IntRect>, color: Color) {
-                rects.forEach { rect ->
-                    val scaledRect = Rect(
-                        left = offsetX + rect.left * scale,
-                        top = offsetY + rect.top * scale,
-                        right = offsetX + rect.right * scale,
-                        bottom = offsetY + rect.bottom * scale
-                    )
-                    drawRect(
-                        color = color.copy(alpha = 0.5f), // semi-transparent
-                        topLeft = scaledRect.topLeft,
-                        size = scaledRect.size
-                    )
-                }
-            }
-
-            drawDebugRects(loopButtonRects, Color.Green)
-            drawDebugRects(drumPadRects, Color.Yellow)
         }
     }
 }
